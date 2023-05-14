@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('./partials/head'); %>
+</head>
+<body id="body-pd" class="body-pd">
+<header class="header body-pd" id="header">
+    <%- include('./partials/header'); %>
+</header>
+<%- include('./partials/sidebar'); %>
+<div class="content">
+    <div class="container">
+        <div class="d-flex justify-content-between mt-2">
+            <h3>Device List</h3>
+            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addClientModal">
+                Add Device
+            </button>
+        </div>
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Phone Number</th>
+                <th scope="col">Status</th>
+                <th scope="col">Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <% for(var i = 0; i < devices.length; i++) { %>
+                <tr>
+                    <td><%= devices[i].name %></td>
+                    <td><%= devices[i].phoneNumber %></td>
+                    <td><%= devices[i].status === 0 ? 'Not Linked' : devices[i].status === 2 ? 'On Sync' : 'Linked' %></td>
+                    <td>
+                        <div class="btn-group" role="group" aria-label="Basic example">
+                            <% if (devices[i].status === 0) { %>
+                                <button type="button" onclick="reconnect('<%= devices[i].clientId %>')" class="btn btn-success btn-sm">Reconnect</button>
+                            <% } %>
+                            <button type="button" class="btn btn-primary btn-sm">Edit</button>
+                            <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteDeviceModal<%= i %>">Delete</button>
+                            <div class="modal fade" id="deleteDeviceModal<%= i %>" tabindex="-1" role="dialog" aria-labelledby="deleteDeviceModalLabel<%= i %>" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="deleteDeviceModalLabel<%= i %>">Confirm Delete Device</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Are you sure you want to delete the device with phone number <%= devices[i].phoneNumber %>?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                            <form method="POST" action="/devices/delete/<%= devices[i]._id %>">
+                                                <button type="submit" class="btn btn-danger">Delete</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            <% } %>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade" id="addClientModal" tabindex="-1" aria-labelledby="addClientModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addClientModalLabel">Add Device</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Add form for input fields -->
+                <form id="addClientForm" action="/devices" method="POST">
+                    <div class="mb-3">
+                        <label for="phoneNumber" class="form-label">Phone Number</label>
+                        <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary" id="addClientButton">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="qr-modal">
+    <div id="qr-modal-content">
+        <h2>Scan QR Code</h2>
+        <div id="spinner" class="text-center mb-3" style="display: none;">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+        <div id="progress-bar" style="display: none;">
+            Logging in...
+        </div>
+        <img id="qr-code" src="" alt="QR Code">
+    </div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    const socket = io();
+
+    const qrModal = document.getElementById('qr-modal');
+    const qrCodeImg = document.getElementById('qr-code');
+
+    const progress_bar = document.getElementById('progress-bar');
+
+    socket.on('qr code', (qrCode) => {
+        qrCodeImg.src = qrCode;
+        $('#spinner').hide();
+        qrCodeImg.style.display = 'block';
+    });
+
+    socket.on('client connected', () => {
+        qrModal.style.display = 'none';
+        window.location.reload();
+    });
+
+    socket.on('loading_screen', (percent) => {
+        // updateProgressBar(percent)
+        $('#spinner').show();
+        progress_bar.style.display = 'block';
+        qrCodeImg.style.display = 'none';
+    });
+
+    document.getElementById('addClientButton').addEventListener('click', () => {
+        const phoneNumber = document.getElementById('phoneNumber').value;
+        const name = document.getElementById('name').value;
+        let error = "";
+        if (!phoneNumber) {
+            error = error + ("Phone Number is Empty \n")
+        }
+        if (!name) {
+            error = error + ("Name is Empty \n")
+        }
+        if (error) {
+            alert(error)
+        } else {
+            console.log("hit")
+            $.ajax({
+                url: '/auth/current-user',
+                method: 'GET',
+                success: function(response) {
+                    console.log(response._id);
+                    const data = {
+                        name: name,
+                        phoneNumber: phoneNumber,
+                        status: 0,
+                        user: response._id
+                    };
+                    $('#addClientModal').modal('toggle'); //or  $('#IDModal').modal('hide');
+                    qrModal.style.display = 'block';
+                    $('#spinner').show();
+                    qrCodeImg.style.display = 'none';
+                    console.log(data);
+                    socket.emit('connect_new_device', data);
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        }
+    });
+
+    function updateProgressBar(value) {
+        if (progress_bar.text <= value) {
+            progress_bar.text = value;
+        }
+    }
+
+    function reconnect(id) {
+        console.log(id)
+        qrModal.style.display = 'block';
+        $('#spinner').show();
+        qrCodeImg.style.display = 'none';
+        socket.emit('reconnect_device', id);
+    }
+</script>
+</body>
+</html>
+

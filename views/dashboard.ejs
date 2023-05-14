@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('./partials/head'); %>
+</head>
+<body id="body-pd" class="body-pd">
+<header class="header body-pd" id="header">
+    <%- include('./partials/header'); %>
+</header>
+<%- include('./partials/sidebar'); %>
+<div class="content">
+    <div class="container">
+        <h1>Dashboard</h1>
+        <div class="client-container">
+            <div class="client hide">
+                <h3 class="title"></h3>
+                <p class="description"></p>
+                <img src="" alt="QR Code" id="qrcode">
+<!--                <h5>Logs:</h5>-->
+                <ul class="logs"></ul>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    $(document).ready(function() {
+        var socket = io();
+
+        $.ajax({
+            url: '/auth/current-user',
+            method: 'GET',
+            success: function(response) {
+                console.log(response._id);
+                let id = response._id;
+                socket.emit('create-dashboard', id );
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
+
+        $('.add-client-btn').click(function() {
+            var clientId = $('#client-id').val();
+            var clientDescription = $('#client-description').val();
+
+            var clientClass = 'client-' + clientId;
+            var template = $('.client').first().clone()
+                .removeClass('hide')
+                .addClass(clientClass);
+
+            template.find('.title').html(clientId);
+            template.find('.description').html(clientDescription);
+            template.find('.logs').append($('<li>').text('Connecting...'));
+            $('.client-container').append(template);
+
+            socket.emit('create-session', {
+                id: clientId,
+                description: clientDescription
+            });
+        });
+
+        socket.on('init-dashboard', function(data) {
+            console.log("load")
+            console.log(data);
+            $('.client-container .client').not(':first').remove();
+            for (var i = 0; i < data.length; i++) {
+                var session = data[i];
+
+                var clientId = session.clientId;
+                var name = session.name;
+
+                var clientClass = 'client-' + clientId;
+                var template = $('.client').first().clone()
+                    .removeClass('hide')
+                    .addClass(clientClass);
+
+                template.find('.title').html(name);
+                $('.client-container').append(template);
+
+                if (session.status === 1) {
+                    $(`.client.${clientClass} .logs`).prepend($('<li>').text('Whatsapp is ready!'));
+                } else {
+                    $(`.client.${clientClass} .logs`).prepend($('<li>').text('Connecting...'));
+                }
+            }
+        });
+
+        socket.on('remove-session', function(id) {
+            $(`.client.client-${id}`).remove();
+        });
+
+        socket.on('message', function(data) {
+            $(`.client.client-${data.clientId} .logs`).prepend($('<li>').text(data.text));
+        });
+
+        socket.on('qr', function(data) {
+            console.log("client.client-",data.clientId)
+            $(`.client.client-${data.clientId} #qrcode`).attr('src', data.src);
+            $(`.client.client-${data.clientId} #qrcode`).show();
+        });
+
+        socket.on('ready', function(data) {
+            $(`.client.client-${data.clientId} #qrcode`).hide();
+            $(`.client.client-${data.clientId} .logs`).append($('<li>').text('Whatsapp is ready!'));
+        });
+
+        socket.on('authenticated', function(data) {
+            $(`.client.client-${data.clientId} #qrcode`).hide();
+        });
+    });
+</script>
+</body>
+</html>
+
