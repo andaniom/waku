@@ -345,3 +345,13 @@ td:hover::after {
     left: 0;
     white-space: normal;
 }
+
+.pagination {
+    /*display: flex;*/
+    /*justify-content: end;*/
+    /*margin-top: 20px;*/
+    position: fixed;
+    bottom: 5px;
+    right: 0%;
+    transform: translateX(-20%);
+}

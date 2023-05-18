@@ -13,11 +13,33 @@ const upload = multer();
 
 /* GET receiver listing. */
 router.get('/', isAuthenticated, async function (req, res, next) {
-    const receivers = await receiverRepository.findAllReceiver(req.user._id);
+    const pageSize = parseInt(req.query.pageSize) || 10; // Number of documents per page (default: 10)
+    let pageNumber = parseInt(req.query.pageNumber) || 1; // Page number to retrieve (default: 1)
+
+    const count = await receiverRepository.countAllReceiver(req.user._id);
+    const maxPage = Math.ceil(count / pageSize);
+    const isLast = pageNumber >= maxPage;
+    const isStart = pageNumber === 1;
+
+    if (pageNumber > maxPage) {
+        pageNumber = maxPage;
+    }
+
+    const receivers = await receiverRepository.findAllReceiver(req.user._id, pageNumber, pageSize);
+
     const groups = await groupRepository.findAllGroup(req.user._id);
     const error = req.query.error;
     const data = {
-        title: 'WA-KU', header: "Receiver List", receivers: receivers, groups: groups, error: error}
+        title: 'WA-KU',
+        header: "Receiver List",
+        receivers: receivers,
+        groups: groups,
+        error: error,
+        pageNumber: pageNumber,
+        maxPage: maxPage,
+        isLast: isLast,
+        isStart: isStart,
+    }
     res.render('receivers', data);
 });
 

@@ -8,8 +8,13 @@ class ReceiverRepository {
         connect();
     }
 
-    async findAllReceiver(userId) {
-        return Receiver.find({'user': userId}).populate('group').populate('user');
+    async findAllReceiver(userId, pageNumber, pageSize) {
+        return Receiver.find({'user': userId}).populate('group').populate('user').skip((pageNumber - 1) * pageSize)
+            .limit(pageSize);
+    }
+
+    async countAllReceiver(userId, pageNumber, pageSize) {
+        return Receiver.find({'user': userId}).populate('group').populate('user').count();
     }
 
     async findById(id) {
