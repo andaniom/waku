@@ -5,3 +5,4 @@ npm-debug.log
 .env
 .DS_Store
 .wwebjs_auth
+/.wwebjs_auth/
