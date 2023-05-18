@@ -316,3 +316,32 @@ ul.logs li:first-child {
 a{
     text-decoration: none;
 }
+
+.ml-1 {
+    margin-left: 1rem;
+}
+
+td {
+    max-width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+td:hover {
+    max-width: 150px;
+    overflow: visible;
+    white-space: normal;
+    /*max-width: none;*/
+}
+
+td:hover::after {
+    content: attr(title);
+    position: absolute;
+    background-color: #000;
+    color: #fff;
+    padding: 5px;
+    top: 100%;
+    left: 0;
+    white-space: normal;
+}

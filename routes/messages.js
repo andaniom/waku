@@ -16,8 +16,10 @@ router.get('/', isAuthenticated, async function (req, res, next) {
     const errorMessage = req.query.error;
     res.render('messages', {
         title: 'WA-KU',
+        header: "Group List",
         error: errorMessage,
-        devices: devices, messages: messages, groups: groups
+        devices: devices, messages: messages,
+        groups: groups
     });
 });
 
@@ -33,10 +35,27 @@ router.post('/', isAuthenticated, async function (req, res, next) {
             res.redirect('/messages');
         }).catch(error => {
             console.log('Error saving:', error);
+            res.redirect('/messages?error=' + encodeURIComponent('Error saving:', error));
+        });
+    } else {
+        res.redirect('/messages?error=' + encodeURIComponent("Error saving"));
+    }
+});
+
+router.post('/update', isAuthenticated, async function (req, res, next) {
+    console.log(req.body);
+    if (req.body.message && req.body.id) {
+        await messageRepository.update(req.body.id, {
+            "message": req.body.message
+        }).then(model => {
+            console.log('model saved:', model);
+            res.redirect('/messages');
+        }).catch(error => {
+            console.log('Error saving:', error);
             alert('Error saving:', error)
         });
     } else {
-        res.redirect('/messages');
+        res.redirect('/messages?error=' + encodeURIComponent("Update Error"));
     }
 });
 
@@ -69,15 +88,17 @@ router.post('/send/:id', isAuthenticated, async function (req, res) {
             res.redirect('/messages?error=' + encodeURIComponent(error));
         } else {
             const message = await messageRepository.findById(_id);
-            if (message) {
-                console.log(message)
+            if (!message) {
+                res.redirect('/messages?error=' + encodeURIComponent("Message Not Found"));
             }
+            await messageRepository.update(_id, {"success": 0})
             const deviceList =
                 await deviceRepository.findDevice({_id: {$in: devices}, status: 1});
             console.log(deviceList)
             const receivers = await receiverRepository.find({group: group});
             console.log(receivers)
             let data = {
+                "id": message._id,
                 "message": message.message,
                 "devices": deviceList.map(device => device.clientId),
                 "receivers": receivers.map(receiver => receiver.phoneNumber)

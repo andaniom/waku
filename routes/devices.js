@@ -9,7 +9,8 @@ const router = express.Router();
 /* GET devices listing. */
 router.get('/', isAuthenticated, async function (req, res, next) {
     const devices = await deviceRepository.findDeviceByUser(req.user._id);
-    res.render('devices', {title: 'WA-KU', devices: devices});
+    const errorMessage = req.query.error;
+    res.render('devices', {title: 'WA-KU', header: "Devices List", error: errorMessage, devices: devices});
 });
 
 router.post('/', isAuthenticated, async function (req, res, next) {
@@ -33,6 +34,28 @@ router.post('/', isAuthenticated, async function (req, res, next) {
     //         console.log('Error saving:', error);
     //         alert('Error saving:', error)
     //     });
+});
+
+
+router.post('/update', isAuthenticated, async function (req, res, next) {
+    console.log(req.body);
+    const {id, phoneNumber, name} = req.body;
+    if (!id || !phoneNumber || !name) {
+        res.redirect('/devices?error=' + encodeURIComponent('Missing Param'));
+    }
+
+    await deviceRepository.updateDevice(id, {
+        "phoneNumber": phoneNumber,
+        "name": name,
+    })
+        .then(model => {
+            console.log('model saved:', model);
+            res.redirect('/devices');
+        })
+        .catch(error => {
+            console.log('Error saving:', error);
+            res.redirect('/devices?error=' + encodeURIComponent('Error saving:', error));
+        });
 });
 
 router.post('/delete/:id', isAuthenticated, async function (req, res) {

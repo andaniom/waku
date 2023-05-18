@@ -6,7 +6,7 @@ const router = express.Router();
 
 /* GET home page. */
 router.get('/', isAuthenticated, async function (req, res, next) {
-    res.render('dashboard', {title: 'WA-KU'});
+    res.render('dashboard', {title: 'WA-KU', header: "Dashboard"});
 });
 
 // router.get('/register', (req, res) => {

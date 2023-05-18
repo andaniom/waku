@@ -21,19 +21,19 @@ class ReceiverRepository {
         return Receiver.find(data);
     }
 
-    async save(deviceObject) {
-        const param = {
-            "phoneNumber": deviceObject.phoneNumber,
-            "name": deviceObject.name,
-            "group": new ObjectId(deviceObject.group),
-            "status": 0,
-            "user": deviceObject.user
-        }
-        // Map the receiver object to a new Receiver document
-        const receiver = new Receiver(param);
+    async save(param) {
+        // const param = {
+        //     "phoneNumber": deviceObject.phoneNumber,
+        //     "name": deviceObject.name,
+        //     "group": new ObjectId(deviceObject.group),
+        //     "status": 0,
+        //     "user": deviceObject.user
+        // }
+        // // Map the receiver object to a new Receiver document
+        // const receiver = new Receiver(param);
         // Use Mongoose to save the document to the receiver
-        await receiver.save();
-        return receiver;
+        await Receiver.create(param);
+        // return receiver;
     }
 
     async update(id, deviceObject) {

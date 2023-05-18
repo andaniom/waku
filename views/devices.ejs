@@ -8,10 +8,12 @@
     <%- include('./partials/header'); %>
 </header>
 <%- include('./partials/sidebar'); %>
+<% if (error) { %>
+    <div class="alert alert-danger"><%= error %></div>
+<% } %>
 <div class="content">
     <div class="container">
-        <div class="d-flex justify-content-between mt-2">
-            <h3>Device List</h3>
+        <div class="d-flex justify-content-end mt-2">
             <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addClientModal">
                 Add Device
             </button>
@@ -36,7 +38,36 @@
                             <% if (devices[i].status === 0) { %>
                                 <button type="button" onclick="reconnect('<%= devices[i].clientId %>')" class="btn btn-success btn-sm">Reconnect</button>
                             <% } %>
-                            <button type="button" class="btn btn-primary btn-sm">Edit</button>
+                                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editDeviceModal<%= i %>">Edit</button>
+                                <div class="modal fade" id="editDeviceModal<%= i %>" tabindex="-1" role="dialog" aria-labelledby="editDeviceModalLabel<%= i %>" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="deleteGroupModalLabel<%= i %>">Edit Device</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form action="/devices/update" method="post">
+                                                    <input name="id" id="id" value="<%= devices[i]._id %>" hidden="">
+                                                    <div class="mb-3">
+                                                        <label for="name" class="form-label">Name</label>
+                                                        <input name="name" id="name" class="form-control" value="<%= devices[i].name %>" required>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="phoneNumber" class="form-label">Name</label>
+                                                        <input name="phoneNumber" id="phoneNumber" class="form-control" value="<%= devices[i].phoneNumber %>" required>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                        <button type="submit" class="btn btn-primary">Save</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteDeviceModal<%= i %>">Delete</button>
                             <div class="modal fade" id="deleteDeviceModal<%= i %>" tabindex="-1" role="dialog" aria-labelledby="deleteDeviceModalLabel<%= i %>" aria-hidden="true">
                                 <div class="modal-dialog" role="document">

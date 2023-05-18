@@ -8,10 +8,12 @@
     <%- include('./partials/header'); %>
 </header>
 <%- include('./partials/sidebar'); %>
+<% if (error) { %>
+    <div class="alert alert-danger"><%= error %></div>
+<% } %>
 <div class="content">
     <div class="container">
-        <div class="d-flex justify-content-between mt-2">
-            <h3>Group List</h3>
+        <div class="d-flex justify-content-end mt-2">
             <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addGroupModal">
                 Add Group
             </button>
@@ -21,7 +23,7 @@
             <tr>
                 <th scope="col">Group</th>
                 <th scope="col">Receivers</th>
-                <th scope="col">Status</th>
+<!--                <th scope="col">Status</th>-->
                 <th scope="col">Action</th>
             </tr>
             </thead>
@@ -30,16 +32,41 @@
                 <tr>
                     <td><%= groups[i].name %></td>
                     <td><%= groups[i].receivers %></td>
-                    <td><%= groups[i].status %></td>
+<!--                    <td><%= groups[i].status %></td>-->
                     <td>
                         <div class="btn-group" role="group" aria-label="Basic example">
-                            <button type="button" class="btn btn-primary btn-sm">Edit</button>
-                            <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteMessageModal<%= i %>">Delete</button>
-                            <div class="modal fade" id="deleteMessageModal<%= i %>" tabindex="-1" role="dialog" aria-labelledby="deleteMessageModalLabel<%= i %>" aria-hidden="true">
+                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editGroupModal<%= i %>">Edit</button>
+                            <div class="modal fade" id="editGroupModal<%= i %>" tabindex="-1" role="dialog" aria-labelledby="editGroupModalLabel<%= i %>" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="deleteMessageModalLabel<%= i %>">Confirm Delete Groups</h5>
+                                            <h5 class="modal-title" id="deleteGroupModalLabel<%= i %>">Edit Group</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form action="/groups/update" method="post">
+                                                <input name="id" id="id" value="<%= groups[i]._id %>" hidden="">
+                                                <div class="mb-3">
+                                                    <label for="message" class="form-label">Name</label>
+                                                    <input name="name" id="name" class="form-control" value="<%= groups[i].name %>" required>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                    <button type="submit" class="btn btn-primary">Save</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteGroupModal<%= i %>">Delete</button>
+                            <div class="modal fade" id="deleteGroupModal<%= i %>" tabindex="-1" role="dialog" aria-labelledby="deleteGroupModalLabel<%= i %>" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="deleteGroupModalLabel<%= i %>">Confirm Delete Groups</h5>
                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
                                             </button>

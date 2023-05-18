@@ -13,8 +13,7 @@
 <% } %>
 <div class="content">
     <div class="container">
-        <div class="d-flex justify-content-between mt-2">
-            <h3>Message List</h3>
+        <div class="d-flex justify-content-end mt-2">
             <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addMessageModal">
                 Add Message
             </button>
@@ -23,15 +22,15 @@
             <thead>
             <tr>
                 <th scope="col">Message</th>
-<!--                <th scope="col">Status</th>-->
+                <th scope="col">Status</th>
                 <th scope="col">Action</th>
             </tr>
             </thead>
             <tbody>
             <% for(var i = 0; i < messages.length; i++) { %>
                 <tr>
-                    <td><%= messages[i].message %></td>
-<!--                    <td><%= messages[i].status %></td>-->
+                    <td title="<%= messages[i].message %>"><%= messages[i].message %></td>
+                    <td id="status-<%= messages[i]._id %>"><%= messages[i].success ? messages[i].success + " Success"  : "" %> </td>
                     <td>
                         <div class="btn-group" role="group" aria-label="Basic example">
                             <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#sendMessageModal<%= i %>">Send</button>
@@ -67,7 +66,32 @@
                                     </div>
                                 </div>
                             </div>
-                            <button type="button" class="btn btn-primary btn-sm">Edit</button>
+                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editMessageModal<%= i %>">Edit</button>
+                            <div class="modal fade" id="editMessageModal<%= i %>" tabindex="-1" role="dialog" aria-labelledby="editMessageModalLabel<%= i %>" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="deleteMessageModalLabel<%= i %>">Edit Message</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form action="/messages/update" method="post">
+                                                <input name="id" id="id" value="<%= messages[i].id %>" hidden="">
+                                                <div class="mb-3">
+                                                    <label for="message" class="form-label">Message</label>
+                                                    <textarea name="message" id="message" class="form-control" rows="3" val="<%= messages[i].message %>" required></textarea>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                    <button type="submit" class="btn btn-primary">Save</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteMessageModal<%= i %>">Delete</button>
                             <div class="modal fade" id="deleteMessageModal<%= i %>" tabindex="-1" role="dialog" aria-labelledby="deleteMessageModalLabel<%= i %>" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
@@ -122,6 +146,14 @@
 </div>
 <script src="/socket.io/socket.io.js"></script>
 <script>
+
+    const socket = io();
+
+    socket.on('send-message', function(data) {
+        console.log("send-message socket ", data)
+        $(`#status-${data.id}`).text(data.success + " Success");
+    });
+
 </script>
 </body>
 </html>

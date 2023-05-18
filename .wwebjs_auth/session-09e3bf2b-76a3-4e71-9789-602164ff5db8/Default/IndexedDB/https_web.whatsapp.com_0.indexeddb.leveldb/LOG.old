@@ -1,9 +1,3 @@
-2023/05/13-18:40:40.846 15103 Reusing MANIFEST /Users/macbook/Downloads/web template/wa-ku/.wwebjs_auth/session-09e3bf2b-76a3-4e71-9789-602164ff5db8/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
-2023/05/13-18:40:40.847 15103 Recovering log #17
-2023/05/13-18:40:40.912 15103 Reusing old log /Users/macbook/Downloads/web template/wa-ku/.wwebjs_auth/session-09e3bf2b-76a3-4e71-9789-602164ff5db8/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/000017.log 
-2023/05/13-18:46:56.736 1ed03 Compacting 1@1 + 1@2 files
-2023/05/13-18:46:56.788 1ed03 Generated table #21@1: 31911 keys, 1213312 bytes
-2023/05/13-18:46:56.788 1ed03 Compacted 1@1 + 1@2 files => 1213312 bytes
-2023/05/13-18:46:56.793 1ed03 compacted to: files[ 0 0 1 0 0 0 0 ]
-2023/05/13-18:46:56.793 1ed03 Delete type=2 #5
-2023/05/13-18:46:56.793 1ed03 Delete type=2 #19
+2023/05/18-18:35:56.457 6d03 Reusing MANIFEST /Users/macbook/Downloads/web template/wa-ku/.wwebjs_auth/session-09e3bf2b-76a3-4e71-9789-602164ff5db8/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2023/05/18-18:35:56.457 6d03 Recovering log #110
+2023/05/18-18:35:56.499 6d03 Reusing old log /Users/macbook/Downloads/web template/wa-ku/.wwebjs_auth/session-09e3bf2b-76a3-4e71-9789-602164ff5db8/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/000110.log 
