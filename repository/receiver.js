@@ -9,7 +9,8 @@ class ReceiverRepository {
     }
 
     async findAllReceiver(userId, pageNumber, pageSize) {
-        return Receiver.find({'user': userId}).populate('group').populate('user').skip((pageNumber - 1) * pageSize)
+        return Receiver.find({'user': userId}).populate('group').populate('user')
+            .skip((pageNumber - 1) * pageSize)
             .limit(pageSize);
     }
 

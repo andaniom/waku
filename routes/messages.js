@@ -19,7 +19,7 @@ router.get('/', isAuthenticated, async function (req, res, next) {
     const isLast = pageNumber >= totalPages;
     const isStart = pageNumber === 1;
 
-    if (pageNumber > totalPages) {
+    if (count > 0 && pageNumber > totalPages) {
         pageNumber = totalPages;
     }
 

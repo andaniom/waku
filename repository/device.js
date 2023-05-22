@@ -22,7 +22,9 @@ class DeviceRepository {
     }
 
     async findDeviceByUser(userId, pageNumber, pageSize) {
-        return Device.find({'user': userId}).populate('user').skip((pageNumber - 1) * pageSize)
+        console.log((pageNumber - 1) * pageSize)
+        return Device.find({'user': userId}).populate('user')
+            .skip((pageNumber - 1) * pageSize)
             .limit(pageSize);
     }
 

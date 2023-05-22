@@ -8,7 +8,8 @@ class MessageRepository {
     }
 
     async findAllMessage(userId, pageNumber, pageSize) {
-        return Message.find({'user': userId}).populate('user').skip((pageNumber - 1) * pageSize)
+        return Message.find({'user': userId}).populate('user')
+            .skip((pageNumber - 1) * pageSize)
             .limit(pageSize);
     }
 

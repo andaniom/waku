@@ -13,7 +13,8 @@ class GroupRepository {
     }
 
     async findAllGroupAndCount(userId, pageNumber, pageSize) {
-        const groups = await Group.find({'user': userId}).populate('user').skip((pageNumber - 1) * pageSize)
+        const groups = await Group.find({'user': userId}).populate('user')
+            .skip((pageNumber - 1) * pageSize)
             .limit(pageSize);
 
         const list = [];
