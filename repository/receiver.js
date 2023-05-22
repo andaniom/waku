@@ -13,7 +13,7 @@ class ReceiverRepository {
             .limit(pageSize);
     }
 
-    async countAllReceiver(userId, pageNumber, pageSize) {
+    async countAllReceiver(userId) {
         return Receiver.find({'user': userId}).populate('group').populate('user').count();
     }
 

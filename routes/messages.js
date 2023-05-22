@@ -7,19 +7,38 @@ const router = express.Router();
 
 const webWaService = require('../service/web-wa-service')
 const {isAuthenticated} = require("../service/auth-service");
+const repository = require("../repository/group");
 
 /* GET messages listing. */
 router.get('/', isAuthenticated, async function (req, res, next) {
+    const pageSize = parseInt(req.query.pageSize) || 10; // Number of documents per page (default: 10)
+    let pageNumber = parseInt(req.query.pageNumber) || 1; // Page number to retrieve (default: 1)
+
+    const count = await messageRepository.countAll(req.user._id);
+    const totalPages = Math.ceil(count / pageSize);
+    const isLast = pageNumber >= totalPages;
+    const isStart = pageNumber === 1;
+
+    if (pageNumber > totalPages) {
+        pageNumber = totalPages;
+    }
+
     const devices = await deviceRepository.findDevice({status: 1, user: req.user._id});
     const groups = await groupRepository.findAllGroup(req.user._id);
-    const messages = await messageRepository.findAllMessage(req.user._id);
+    const messages = await messageRepository.findAllMessage(req.user._id, pageNumber, pageSize);
     const errorMessage = req.query.error;
     res.render('messages', {
         title: 'WA-KU',
         header: "Group List",
+        route: "messages",
         error: errorMessage,
         devices: devices, messages: messages,
-        groups: groups
+        groups: groups,
+        pageNumber: pageNumber,
+        totalPages: totalPages,
+        isLast: isLast,
+        isStart: isStart,
+        totalRows: count
     });
 });
 

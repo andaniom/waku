@@ -115,25 +115,7 @@
             </tbody>
         </table>
     </div>
-    <div class="pagination">
-        <ul class="pagination justify-content-center">
-            <li class="page-item <%= isStart ? 'disabled' : '' %>">
-                <a class="page-link" href="/receivers?pageNumber=1">First</a>
-            </li>
-            <li class="page-item <%= isStart ? 'disabled' : '' %>">
-                <a class="page-link" href="/receivers?pageNumber=<%= pageNumber - 1 %>">Previous</a>
-            </li>
-            <li class="page-item active">
-                <a class="page-link" href="#"><%= pageNumber %></a>
-            </li>
-            <li class="page-item <%= isLast ? 'disabled' : '' %>">
-                <a class="page-link" href="/receivers?pageNumber=<%= pageNumber + 1 %>">Next</a>
-            </li>
-            <li class="page-item <%= isLast ? 'disabled' : '' %>">
-                <a class="page-link" href="/receivers?pageNumber=<%= maxPage %>">Last</a>
-            </li>
-        </ul>
-    </div>
+    <%- include('./partials/pagination'); %>
 </div>
 <div class="modal fade" id="addReceiverModal" tabindex="-1" aria-labelledby="addReceiverModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">

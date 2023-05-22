@@ -1,14 +1,36 @@
 var express = require('express');
-const deviceRepository = require("../repository/device");
 const repository = require('../repository/group');
 const {isAuthenticated} = require("../service/auth-service");
 var router = express.Router();
 
 /* GET messages listing. */
 router.get('/', isAuthenticated, async function (req, res, next) {
-    const groups = await repository.findAllGroupAndCount(req.user._id);
+    const pageSize = parseInt(req.query.pageSize) || 10; // Number of documents per page (default: 10)
+    let pageNumber = parseInt(req.query.pageNumber) || 1; // Page number to retrieve (default: 1)
+
+    const count = await repository.countAll(req.user._id);
+    const totalPages = Math.ceil(count / pageSize);
+    const isLast = pageNumber >= totalPages;
+    const isStart = pageNumber === 1;
+
+    if (pageNumber > totalPages) {
+        pageNumber = totalPages;
+    }
+
+    const groups = await repository.findAllGroupAndCount(req.user._id, pageNumber, pageSize);
     const errorMessage = req.query.error;
-    res.render('groups', {title: 'WA-KU', header: "Group List", error: errorMessage, groups: groups});
+    res.render('groups', {
+        title: 'WA-KU',
+        header: "Group List",
+        route: "groups",
+        error: errorMessage,
+        groups: groups,
+        pageNumber: pageNumber,
+        totalPages: totalPages,
+        isLast: isLast,
+        isStart: isStart,
+        totalRows: count
+    });
 });
 
 router.post('/', isAuthenticated, async function (req, res, next) {

@@ -12,8 +12,9 @@ class GroupRepository {
         return group;
     }
 
-    async findAllGroupAndCount(userId) {
-        const groups = await Group.find({'user': userId}).populate('user');
+    async findAllGroupAndCount(userId, pageNumber, pageSize) {
+        const groups = await Group.find({'user': userId}).populate('user').skip((pageNumber - 1) * pageSize)
+            .limit(pageSize);
 
         const list = [];
         for (const group of groups) {
@@ -27,6 +28,10 @@ class GroupRepository {
             list.push(res);
         }
         return list;
+    }
+
+    async countAll(userId) {
+        return Group.find({'user': userId}).populate('user').count();
     }
 
     async findById(id) {

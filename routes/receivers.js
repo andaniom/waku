@@ -17,12 +17,12 @@ router.get('/', isAuthenticated, async function (req, res, next) {
     let pageNumber = parseInt(req.query.pageNumber) || 1; // Page number to retrieve (default: 1)
 
     const count = await receiverRepository.countAllReceiver(req.user._id);
-    const maxPage = Math.ceil(count / pageSize);
-    const isLast = pageNumber >= maxPage;
+    const totalPages = Math.ceil(count / pageSize);
+    const isLast = pageNumber >= totalPages;
     const isStart = pageNumber === 1;
 
-    if (pageNumber > maxPage) {
-        pageNumber = maxPage;
+    if (pageNumber > totalPages) {
+        pageNumber = totalPages;
     }
 
     const receivers = await receiverRepository.findAllReceiver(req.user._id, pageNumber, pageSize);
@@ -32,13 +32,15 @@ router.get('/', isAuthenticated, async function (req, res, next) {
     const data = {
         title: 'WA-KU',
         header: "Receiver List",
+        route: "receivers",
         receivers: receivers,
         groups: groups,
         error: error,
         pageNumber: pageNumber,
-        maxPage: maxPage,
+        totalPages: totalPages,
         isLast: isLast,
         isStart: isStart,
+        totalRows: count
     }
     res.render('receivers', data);
 });

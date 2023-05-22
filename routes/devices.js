@@ -8,9 +8,32 @@ const router = express.Router();
 
 /* GET devices listing. */
 router.get('/', isAuthenticated, async function (req, res, next) {
-    const devices = await deviceRepository.findDeviceByUser(req.user._id);
+    const pageSize = parseInt(req.query.pageSize) || 10; // Number of documents per page (default: 10)
+    let pageNumber = parseInt(req.query.pageNumber) || 1; // Page number to retrieve (default: 1)
+
+    const count = await deviceRepository.countAll(req.user._id);
+    const totalPages = Math.ceil(count / pageSize);
+    const isLast = pageNumber >= totalPages;
+    const isStart = pageNumber === 1;
+
+    if (pageNumber > totalPages) {
+        pageNumber = totalPages;
+    }
+
+    const devices = await deviceRepository.findDeviceByUser(req.user._id, pageNumber, pageSize);
     const errorMessage = req.query.error;
-    res.render('devices', {title: 'WA-KU', header: "Devices List", error: errorMessage, devices: devices});
+    res.render('devices', {
+        title: 'WA-KU',
+        header: "Devices List",
+        route: "devices",
+        error: errorMessage,
+        devices: devices,
+        pageNumber: pageNumber,
+        totalPages: totalPages,
+        isLast: isLast,
+        isStart: isStart,
+        totalRows: count
+    });
 });
 
 router.post('/', isAuthenticated, async function (req, res, next) {

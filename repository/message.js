@@ -7,9 +7,13 @@ class MessageRepository {
         connect();
     }
 
-    async findAllMessage(userId) {
-        const message = await Message.find({'user' : userId}).populate('user');
-        return message;
+    async findAllMessage(userId, pageNumber, pageSize) {
+        return Message.find({'user': userId}).populate('user').skip((pageNumber - 1) * pageSize)
+            .limit(pageSize);
+    }
+
+    async countAll(userId) {
+        return Message.find({'user': userId}).populate('user').count();
     }
 
     async findById(id) {

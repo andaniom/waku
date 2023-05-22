@@ -1,0 +1,46 @@
+<div class="pagination">
+    <ul class="pagination justify-content-center">
+<!--        <li class="page-item <%= isStart ? 'disabled' : '' %>">-->
+<!--            <a class="page-link" href="/<%= route %>?pageNumber=1">First</a>-->
+<!--        </li>-->
+        <li class="page-item <%= isStart ? 'disabled' : '' %>">
+            <a class="page-link" href="/<%= route %>?pageNumber=<%= pageNumber - 1 %>">
+                <div class="bx bx-chevron-left"></div></a>
+        </li>
+        <% if (pageNumber > 2) { %>
+            <li class="page-item">
+                <a class="page-link" href="?pageNumber=1">1</a>
+            </li>
+            <% if (pageNumber > 3) { %>
+                <li class="page-item disabled">
+                    <span class="page-link">...</span>
+                </li>
+            <% } %>
+        <% } %>
+
+        <% for (var i = pageNumber - 1; i <= pageNumber + 1; i++) { %>
+            <% if (i >= 1 && i <= totalPages) { %>
+                <li class="page-item <%= i === pageNumber ? 'active' : '' %>">
+                    <a class="page-link" href="?pageNumber=<%= i %>"><%= i %></a>
+                </li>
+            <% } %>
+        <% } %>
+
+        <% if (pageNumber < totalPages - 1) { %>
+            <% if (pageNumber < totalPages - 2) { %>
+                <li class="page-item disabled">
+                    <span class="page-link">...</span>
+                </li>
+            <% } %>
+            <li class="page-item">
+                <a class="page-link" href="?pageNumber=<%= totalPages %>"><%= totalPages %></a>
+            </li>
+        <% } %>
+        <li class="page-item <%= isLast ? 'disabled' : '' %>">
+            <a class="page-link" href="/<%= route %>?pageNumber=<%= pageNumber + 1 %>"><div class="bx bx-chevron-right"></div></a>
+        </li>
+<!--        <li class="page-item <%= isLast ? 'disabled' : '' %>">-->
+<!--            <a class="page-link" href="/<%= route %>?pageNumber=<%= totalPages %>">Last</a>-->
+<!--        </li>-->
+    </ul>
+</div>

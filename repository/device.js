@@ -1,6 +1,7 @@
-const { connect, disconnect } = require('../config/db-config');
-const { Device } = require('../models/device');
+const {connect, disconnect} = require('../config/db-config');
+const {Device} = require('../models/device');
 const logger = require('../logger/logger');
+const {Receiver} = require("../models/receiver");
 
 class DeviceRepository {
 
@@ -12,8 +13,17 @@ class DeviceRepository {
         return Device.find({});
     }
 
+    async countAll(userId) {
+        return Device.find({'user': userId}).populate('user').count();
+    }
+
     async findDeviceByUser(userId) {
-        return Device.find({'user' : userId}).populate('user');
+        return Device.find({'user': userId}).populate('user');
+    }
+
+    async findDeviceByUser(userId, pageNumber, pageSize) {
+        return Device.find({'user': userId}).populate('user').skip((pageNumber - 1) * pageSize)
+            .limit(pageSize);
     }
 
     async findDeviceById(id) {
