@@ -322,18 +322,18 @@ a{
 }
 
 td {
-    max-width: 150px;
+    max-width: 20rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-td:hover {
-    max-width: 150px;
-    overflow: visible;
-    white-space: normal;
-    /*max-width: none;*/
-}
+/*td:hover {*/
+/*    max-width: 20rem;*/
+/*    overflow: visible;*/
+/*    white-space: normal;*/
+/*    !*max-width: none;*!*/
+/*}*/
 
 td:hover::after {
     content: attr(title);
