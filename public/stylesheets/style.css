@@ -352,6 +352,6 @@ td:hover::after {
     /*margin-top: 20px;*/
     position: fixed;
     bottom: 5px;
-    right: 0%;
-    transform: translateX(-20%);
+    right: 1%;
+    transform: translateX(-10%);
 }

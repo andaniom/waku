@@ -1,6 +1,9 @@
 const {phoneNumberFormatter} = require("../helper/formater");
 const messageRepository = require("../repository/message");
 
+function delay(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+}
 class WebWaService {
     constructor() {
     }
@@ -39,22 +42,24 @@ class WebWaService {
         const client = sessions.find(sess => sess.id === clientId)?.client;
         if (client) {
             for (let i = 0; i < datas.length; i++) {
-                setTimeout(async function () {
-                    let receiver = datas[i];
-                    const number = phoneNumberFormatter(receiver);
-                    console.log(clientId, message, number)
-                    const isRegisteredNumber = await client.isRegisteredUser(number);
-                    if (isRegisteredNumber) {
-                        console.log("client send")
-                        const message = await messageRepository.findById(messageId);
-                        let count = message.success ? (message.success + 1) : 1
-                        const update = await messageRepository.update(messageId, {"success" : count});
-                        console.log(update)
-                        await client.sendMessage(number, message)
-                        io.emit('send-message', {"id": messageId, "value": receiver, "success" : count});
-                        console.log('This printed after about 5 second');
-                    }
-                }, 5000 * i);
+                let receiver = datas[i];
+                const number = phoneNumberFormatter(receiver);
+                console.log(clientId, message, number)
+                const isRegisteredNumber = await client.isRegisteredUser(number);
+                if (isRegisteredNumber) {
+                    console.log("client send")
+                    const message = await messageRepository.findById(messageId);
+                    let count = message.success ? (message.success + 1) : 1
+                    const update = await messageRepository.update(messageId, {"success" : count});
+                    console.log(update)
+                    await client.sendMessage(number, message)
+                    io.emit('send-message', {"id": messageId, "value": receiver, "success" : count});
+                    console.log('This printed after about 5 second');
+                }
+                await delay(1000);
+                if ((i + 1) % 10 === 0 && i !== 0) {
+                    await delay(5000);
+                }
 
             }
         }
