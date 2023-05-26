@@ -1,9 +1,0 @@
-2023/04/27-12:03:15.686 7007 Creating DB /Users/macbook/Downloads/web template/wa-ku/.wwebjs_auth/session-57fa3beb-9508-4eaf-b711-ac6dbe5cc182/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb since it was missing.
-2023/04/27-12:03:15.693 7007 Reusing MANIFEST /Users/macbook/Downloads/web template/wa-ku/.wwebjs_auth/session-57fa3beb-9508-4eaf-b711-ac6dbe5cc182/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
-2023/04/27-12:03:15.803 7007 Level-0 table #5: started
-2023/04/27-12:03:15.821 7007 Level-0 table #5: 7472 bytes OK
-2023/04/27-12:03:15.831 7007 Delete type=0 #3
-2023/04/27-12:03:15.832 7007 Manual compaction at level-0 from '\x00\x01\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x02\x00\x00\x00' @ 0 : 0; will stop at (end)
-2023/04/27-12:04:34.217 7007 Level-0 table #7: started
-2023/04/27-12:04:34.257 7007 Level-0 table #7: 1048440 bytes OK
-2023/04/27-12:04:34.265 7007 Delete type=0 #4
