@@ -14,7 +14,7 @@ class WebWaService {
         data.devices.forEach(clientId => {
             const client = sessions.find(sess => sess.id === clientId)?.client;
             if (client) {
-                console.log(client)
+                // console.log(client)
                 devices.push(clientId);
             }
         })
@@ -34,29 +34,27 @@ class WebWaService {
 
         for (let i = 0; i < devices.length; i += devices.length) {
             const clientId = devices[i];
-            await this.processMessage(clientId, datas[i], data.id, data.message);
+            await this.processMessage(clientId, datas[i], data.id);
         }
     }
 
-    async processMessage(clientId, datas, messageId, message) {
+    async processMessage(clientId, datas, messageId) {
         const client = sessions.find(sess => sess.id === clientId)?.client;
         if (client) {
             for (let i = 0; i < datas.length; i++) {
                 try {
                     let receiver = datas[i];
                     const number = phoneNumberFormatter(receiver);
-                    console.log(clientId, message, number)
                     const isRegisteredNumber = await client.isRegisteredUser(number);
                     if (isRegisteredNumber) {
-                        console.log("client send")
                         const message = await messageRepository.findById(messageId);
-                        client.sendMessage(number, message).then(async res => {
-                            let count = message.success ? (message.success + 1) : 1
-                            const update = await messageRepository.update(messageId, {"success": count});
-                            io.emit('send-message', {"id": messageId, "value": receiver, "success": count});
-                        }).catch(e => {
-                            console.log(e)
-                        })
+                        console.log(clientId, message.message, number)
+                        const res = await client.sendMessage(number, message.message);
+                        console.log(res);
+                        let count = message.success ? (message.success + 1) : 1
+                        const update = await messageRepository.update(messageId, {"success": count});
+                        console.log("client send ", update)
+                        io.emit('send-message', {"id": messageId, "value": receiver, "success": count});
                     }
                     await delay(1000);
                     if ((i + 1) % 10 === 0 && i !== 0) {
@@ -68,6 +66,10 @@ class WebWaService {
 
             }
         }
+    }
+
+    async handleMessage(clientId, msg){
+        console.log('MESSAGE RECEIVED', msg);
     }
 }
 
