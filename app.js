@@ -92,7 +92,7 @@ app.use(function (err, req, res, next) {
     res.render('error');
 });
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5000;
 
 http.listen(port, () => {
     console.log(`Listening on port ${port}`);
