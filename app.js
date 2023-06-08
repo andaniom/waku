@@ -154,6 +154,11 @@ io.on('connection', (socket) => {
 const initClient = function (clientId) {
     const client = new Client({
         restartOnAuthFail: true,
+        puppeteer: {
+            args: [
+                '--no-sandbox',
+            ]
+        },
         // puppeteer: {
         // headless: false,
         // args: [
