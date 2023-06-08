@@ -2,7 +2,7 @@ node_modules
 build
 npm-debug.log
 .nyc
-.env
+#.env
 .DS_Store
 .wwebjs_auth
 /.wwebjs_auth/
