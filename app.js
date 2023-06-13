@@ -92,11 +92,11 @@ app.use(function (err, req, res, next) {
     res.render('error');
 });
 
-// const port = process.env.PORT || 5000;
-//
-// http.listen(port, () => {
-//     console.log(`Listening on port ${port}`);
-// });
+const port = process.env.PORT || 3000;
+
+http.listen(port, () => {
+    console.log(`Listening on port ${port}`);
+});
 
 const sessions = [];
 global.sessions = sessions;
@@ -455,4 +455,4 @@ const reconnectClient = function (clientId) {
 
 init();
 
-module.exports = app;
+// module.exports = app;
