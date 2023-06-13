@@ -155,7 +155,6 @@ const initClient = function (clientId) {
     const client = new Client({
         restartOnAuthFail: true,
         puppeteer: {
-            headless: false,
             args: [
                 '--no-sandbox',
             ]
