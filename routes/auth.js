@@ -37,13 +37,14 @@ router.post("/register", function (req, res) {
         if (err) {
             res.json({success: false, message: "Your account could not be saved. Error: " + err});
         } else {
-            req.login(user, (er) => {
-                if (er) {
-                    res.json({success: false, message: er});
-                } else {
-                    res.redirect('/login');
-                }
-            });
+            res.redirect('/login');
+            // req.login(user, (er) => {
+            //     if (er) {
+            //         res.json({success: false, message: er});
+            //     } else {
+            //         res.redirect('/login');
+            //     }
+            // });
         }
     });
 });
