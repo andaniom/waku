@@ -41,7 +41,7 @@ router.post("/register", function (req, res) {
                 if (er) {
                     res.json({success: false, message: er});
                 } else {
-                    res.json({success: true, message: "Your account has been saved"});
+                    res.redirect('/login');
                 }
             });
         }
